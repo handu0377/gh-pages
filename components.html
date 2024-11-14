@@ -1,0 +1,50 @@
+---
+layout: default
+---
+
+<div class="home">
+  <div class="brand-header">
+    <div class="container-fluid">
+      <h1>基础组件</h1>
+      <p>WeUI 包含了大量常用的组件：按钮，表单，列表，对话框等。这里的组件全部都是官方的样式。</p>
+    </div>
+  </div>
+  <div class="container-fluid docs-container">
+    <div class="menu-col">
+      {% include sidenav.html %}
+    </div>
+    <div class="device-col">
+      <div class="device">
+        <div class="status-bar"></div>
+        <div class="window" id="window">
+          <iframe src="{{ "/docs-demos/buttons.html" | prepend: site.baseurl }}" width="320" height="549" frameborder="0"></iframe>
+          <div id="qrcode"></div>
+        </div>
+        <div id="qrcode-btn"></div>
+      </div>
+    </div>
+    <div class="docs-col">
+
+      {% include _components/grid.html %}
+      {% include _components/buttons.html %}
+      {% include _components/cell.html %}
+      {% include _components/form.html %}
+      {% include _components/msg.html %}
+      {% include _components/progress.html %}
+      {% include _components/dialog.html %}
+      {% include _components/loading.html %}
+      {% include _components/actions.html %}
+      {% include _components/toast.html %}
+      {% include _components/toptip.html %}
+      {% include _components/tabbar.html %}
+      {% include _components/navbar.html %}
+      {% include _components/panel.html %}
+      {% include _components/searchbar.html %}
+      {% include _components/icons.html %}
+    </div>
+
+  </div>
+
+</div>
+
+<script src="{{ "/assets/js/qrcode.js" | prepend: site.baseurl }}"></script>

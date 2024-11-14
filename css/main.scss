@@ -1,0 +1,313 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+
+
+// Our variables
+$base-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$base-font-size:   16px;
+$base-font-weight: 400;
+$small-font-size:  $base-font-size * 0.875;
+$base-line-height: 1.5;
+
+$spacing-unit:     30px;
+
+$text-color:       #111;
+$background-color: #fdfdfd;
+$brand-color:      #2a7ae2;
+
+$grey-color:       #828282;
+$grey-color-light: lighten($grey-color, 40%);
+$grey-color-dark:  darken($grey-color, 25%);
+
+// Width of the content area
+$content-width:    800px;
+
+$on-palm:          600px;
+$on-laptop:        800px;
+
+
+
+// Use media queries like this:
+// @include media-query($on-palm) {
+//     .wrapper {
+//         padding-right: $spacing-unit / 2;
+//         padding-left: $spacing-unit / 2;
+//     }
+// }
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
+
+
+
+// Import partials from `sass_dir` (defaults to `_sass`)
+@import
+        "base",
+        "layout",
+        "syntax-highlighting"
+;
+
+body {
+  position: relative;
+  font-size: 14px;
+  line-height: 150%;
+}
+
+article {
+  padding-top: 30px;
+}
+.header {
+  margin: 0!important;
+  font-size: 16px;
+}
+
+.navbar-brand {
+  padding: 11px;
+  img {
+    width: 32px;
+  }
+}
+
+.container-fluid {
+  max-width: 1400px;
+}
+
+.docs-container {
+  margin-top: 60px;
+}
+
+.menu-col {
+  float: left;
+  width: 150px;
+}
+
+.device-col {
+  float: right;
+  width: 440px;
+}
+
+.docs-col {
+  margin: -60px 440px 0 150px;
+}
+
+.device {
+  background-image: url("../assets/img/device-sprite.png");
+  background-repeat: no-repeat;
+  width: 395px;
+  height: 813px;
+  background-position: -395px 0;
+  background-size: 300%;
+  //background-position: -400px 0;
+  margin-left: 20px;
+  position: relative;
+}
+
+.device-fixed, .menu-fixed {
+  position: fixed;
+}
+
+.window {
+  position: absolute;
+  top: 137px;
+  left: 37px;
+  width: 321px;
+  height: 549px;
+  overflow: hidden;
+  font-size: .85rem;
+  line-height: 1.05rem;
+  background: #eee;
+}
+
+.status-bar {
+  height: 20px;
+  width: 320px;
+  background: url("../assets/img/status-bar.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  top: 117px;
+  position: absolute;
+  z-index: 99;
+  left: 37px;
+}
+
+.side-nav {
+  margin-left: 0;
+}
+
+.side-nav > li > a {
+  width: 120px;
+  color: #666;
+  background: transparent!important;
+  padding: 8px 0;
+}
+.side-nav > li.active > a {
+  color: $brand-color;
+}
+
+.brand-header {
+  position: relative;
+  padding: 60px 0;
+  color: #555;
+  text-shadow: 0 1px 0 rgba(0,0,0,.1);
+  background-color: #f4f4f4;
+  //background-image: linear-gradient(to bottom,#563d7c 0,#6f5499 100%);
+  background-repeat: repeat-x;
+  margin-bottom: 20px;
+
+  font-size: 18px;
+
+  p {
+    margin: 10px 0;
+  }
+
+  .notice {
+    font-size: 14px;
+    color: #999;
+  }
+}
+
+.logo {
+  float: left;
+
+  img {
+    width: 250px;
+  }
+}
+
+footer {
+  font-size: 13px;
+  color: #999;
+  border-top: 1px solid #ccc;
+  background: #f4f4f4;
+  margin: 100px 0 0;
+  padding: 20px;
+  text-align: center;
+
+  .links {
+    margin: 20px 0;
+    padding: 0;
+  }
+
+  li {
+    display: inline-block;
+    + li {
+      margin-left: 15px;
+    }
+  }
+
+  a {
+    color: #999;
+  }
+
+}
+
+h2 {
+  color: #660066;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 1em 0;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+h3 {
+  font-size: 18px;
+  color: #555;
+}
+
+code {
+  border: 0;
+}
+
+.home {
+  .brand-header .container {
+    padding-top: 30px;
+
+    .logo {
+      margin-top: -25px;
+      margin-right: 40px;
+    }
+  }
+}
+
+
+@media screen and (max-width: 1200px) {
+  .menu-col, .device-col {
+    display: none;
+  }
+
+  .menu-fixed, .device-fixed {
+    position: fixed;
+    top: 20px;
+  }
+
+  .docs-col {
+    margin: 0 20px;
+  }
+}
+
+.git-buttons {
+  margin-top: 15px;
+  iframe {
+    width: 100px;
+    height: 24px;
+    border: 0;
+    display: inline-block;
+  }
+}
+
+#qrcode {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  z-index: 999;
+  bottom: 0;
+  left: 50%;
+  transform: translate3d(-50%, 100%, 0);
+  transition: .5s;
+
+  &.show {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+#qrcode-btn {
+  width: 67px;
+  height: 68px;
+  bottom: 39px;
+  position: absolute;
+  left: 50%;
+  margin-left: -33.5px;
+  cursor: pointer;
+  background-image: url("../assets/img/home-btn.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  animation: spin 4s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+.thumbnail .img-wrap {
+  overflow: hidden;
+
+  img {
+  }
+}
+
+.screenshot {
+  img {
+    display: block;
+    margin-bottom: 40px;
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    transform-origin: 50% 50%;
+  }
+}

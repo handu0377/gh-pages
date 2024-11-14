@@ -1,0 +1,97 @@
+<article id="infinite" class='component' data-url="infinite.html">
+  <h2>滚动加载</h2>
+  <p>当用户滚动到页面底部的时候加载更多内容。</p>
+
+  <p>首先你需要把一段显示加载状态的代码放入需要滚动加载的容器中，这里我们默认是 document.body，加载指示器的代码如下：</p>
+
+{% highlight html %}
+<div class="weui-infinite-scroll">
+  <div class="infinite-preloader"></div><!-- 菊花 -->
+  正在加载... <!-- 文案，可以自行修改 -->
+</div>
+{% endhighlight %}
+
+  <p>然后调用JS初始化滚动加载插件：</p>
+
+{% highlight js %}
+$(document.body).infinite();
+{% endhighlight %}
+
+  <p>从 <code>v0.4.0</code> 版本开始，可以在任何div内初始化滚动加载组件，并且一个页面内可以初始化多个。</p>
+
+  <h3>参数</h3>
+
+  <p><code>infinite</code> 方法接收一个 <code>distance</code> 参数：</p>
+
+{% highlight js %}
+$(document.body).infinite(100);
+{% endhighlight %}
+
+  <p>默认的 <code>distance</code> 值是 <code>50</code>，表示滚动到距离底部 50 px 的时候会触发加载.</p>
+
+  <h3>事件</h3>
+
+  <p>当用户滚动到页面底部的时候，会在 <code>body</code> 上触发 <code>infinite</code> 事件。监听此事件即可:</p>
+
+{% highlight js %}
+var loading = false;  //状态标记
+$(document.body).infinite().on("infinite", function() {
+  if(loading) return;
+  loading = true;
+  setTimeout(function() {
+    $("#list").append("<p> 我是新加载的内容 </p>");
+    loading = false;
+  }, 1500);   //模拟延迟
+});
+{% endhighlight %}
+
+  <p>注意一点，因为插件并不知道你是否正在加载，所以只要滚动到距离底部 50px 以内都会触发事件。因此 <code>infinite</code> 事件可能会触发多次。需要自己来控制不要同时进行多个加载。可以参考上面的代码通过一个 loading 标记位来控制。</p>
+
+  <h3>销毁</h3>
+
+  <p>如果你不需要滚动加载了，比如已经加载完了所有内容，调用 <code>$(document.body).destroyInfinite()</code> 可以销毁插件。之后你可以再次调用 <code>$(document.body).infinite()</code> 来重新初始化. </p>
+
+  <p>不过即使销毁插件，也不会把加载指示器的HTML代码删除，所以你需要自己来隐藏或者删除它。</p>
+</article>
+
+
+<article class='component' data-url="infinite-with-navbar.html">
+  <h3>滚动加载结合TAB</h3>
+  <p>同样可以在每一个 <code>.weui_tab_bd_item</code> 都初始化一个独立的滚动加载：</p>
+
+{% highlight html %}
+<div class="weui_tab" id='page-infinite-navbar'>
+  <div class="weui_navbar">
+    <a href='#tab1' class="weui_navbar_item weui_bar_item_on">
+      选项一
+    </a>
+    <a href='#tab2' class="weui_navbar_item">
+      选项二
+    </a>
+  </div>
+  <div class="weui_tab_bd">
+    <div id="tab1" class="weui_tab_bd_item weui_tab_bd_item_active">
+      <h1 class="doc-head">页面一</h1>
+      <div class="content-padded">
+        ...
+      </div>
+      <div class="weui-infinite-scroll">
+        <div class="infinite-preloader"></div>
+        正在加载...
+      </div>
+    </div>
+    <div id="tab2" class="weui_tab_bd_item">
+      <h1 class="doc-head">页面二</h1>
+      <div class="content-padded">
+        ...
+      </div>
+      <div class="weui-infinite-scroll">
+        <div class="infinite-preloader"></div>
+        正在加载...
+      </div>
+    </div>
+  </div>
+</div>
+{% endhighlight %}
+
+</article>

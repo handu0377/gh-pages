@@ -1,0 +1,115 @@
+<article id="pull-to-refresh" class='component' data-url="pull-to-refresh.html">
+  <h2>下拉刷新</h2>
+  <p>原生滚动实现的下拉刷新。</p>
+  <p>为了使用下拉刷新，首先你需要在被下拉的容器的最顶部加上下拉状态的代码(这里我们在 <code>document.body</code> 上进行下拉刷新)：</p>
+
+
+{% highlight html %}
+<body>
+  <!-- body 顶部加上如下代码 -->
+  <div class="weui-pull-to-refresh-layer">
+    <div class="pull-to-refresh-arrow"></div> <!-- 上下拉动的时候显示的箭头 -->
+    <div class="pull-to-refresh-preloader"></div> <!-- 正在刷新的菊花 -->
+    <div class="down">下拉刷新</div><!-- 下拉过程显示的文案 -->
+    <div class="up">释放刷新</div><!-- 下拉超过50px显示的文案 -->
+    <div class="refresh">正在刷新...</div><!-- 正在刷新时显示的文案 -->
+  </div>
+
+  <!-- 其他内容 -->
+</body>
+{% endhighlight %}
+
+  <p>其中 <code>down</code>, <code>up</code>, <code>refresh</code> 分别是在下拉过程的不同状态下显示的。你可以随意修改其中的内容来定制自己的样式</p>
+
+  <p>然后通过JS初始化下拉刷新：</p>
+
+{% highlight js %}
+$(document.body).pullToRefresh();
+{% endhighlight %}
+
+  <p>注意，从 <code>v0.4.0</code> 版本之后，你可以在任何 DIV 内初始化下拉刷新操作。并且同一个页面可以初始化多个下拉刷新。</p>
+
+  <p>当下拉刷新的动作触发的时候，会在容器上触发一个 <code>pull-to-refresh</code> 事件.</p>
+
+{% highlight js %}
+$(document.body).on("pull-to-refresh", function() {
+  //do something
+});
+{% endhighlight %}
+
+  <h3>完成下拉刷新</h3>
+
+  <p>当下拉刷新的工作完成之后，需要重置下拉刷新的状态：</p>
+
+{% highlight js %}
+$(document.body).pullToRefreshDone();
+{% endhighlight %}
+
+  <h3>下拉过程</h3>
+
+  <p>下拉刷新的整个过程分三步:</p>
+
+  <ol>
+    <li>当用户正在拖动，并且未到达50px的时候，会在容器上增加一个 <code>pull-down</code> 类</li>
+    <li>当用户正在拖动，并且已经达到或者超过50px的时候，会在容器上增加一个 <code>pull-up</code> 类</li>
+    <li>当用户拖动超过50px并且释放之后，会在容器上增加一个 <code>refreshing</code> 类</li>
+  </ol>
+
+  <p>后续会在用户下拉的三个步骤都触发对应的事件，方便细粒度控制下拉刷新。</p>
+
+</article>
+
+<article class='component' data-url="pull-to-refresh-with-navbar.html">
+  <h3>下拉刷新结合TAB</h3>
+  <p>可以在每一个 <code>.weui_tab_bd_item</code> 都初始化一个独立的下拉刷新：</p>
+
+
+{% highlight html %}
+<div class="weui_tab" id='page-ptr-navbar'>
+  <div class="weui_navbar">
+    <a href='#tab1' class="weui_navbar_item weui_bar_item_on">
+      选项一
+    </a>
+    <a href='#tab2' class="weui_navbar_item">
+      选项二
+    </a>
+    <a href='#tab3' class="weui_navbar_item">
+      选项三
+    </a>
+  </div>
+  <div class="weui_tab_bd">
+    <div id="tab1" class="weui_tab_bd_item weui_tab_bd_item_active">
+      <div class="weui-pull-to-refresh-layer">
+        <div class="pull-to-refresh-arrow"></div>
+        <div class="pull-to-refresh-preloader"></div>
+        <div class="down">下拉刷新</div>
+        <div class="up">释放刷新</div>
+        <div class="refresh">正在刷新...</div>
+      </div>
+      <h1 class="doc-head">页面一</h1>
+    </div>
+    <div id="tab2" class="weui_tab_bd_item">
+      <div class="weui-pull-to-refresh-layer">
+        <div class="pull-to-refresh-arrow"></div>
+        <div class="pull-to-refresh-preloader"></div>
+        <div class="down">下拉刷新</div>
+        <div class="up">释放刷新</div>
+        <div class="refresh">正在刷新...</div>
+      </div>
+      <h1 class="doc-head">页面二</h1>
+    </div>
+    <div id="tab3" class="weui_tab_bd_item">
+      <div class="weui-pull-to-refresh-layer">
+        <div class="pull-to-refresh-arrow"></div>
+        <div class="pull-to-refresh-preloader"></div>
+        <div class="down">下拉刷新</div>
+        <div class="up">释放刷新</div>
+        <div class="refresh">正在刷新...</div>
+      </div>
+      <h1 class="doc-head">页面三</h1>
+    </div>
+  </div>
+</div>
+{% endhighlight %}
+
+</article>
