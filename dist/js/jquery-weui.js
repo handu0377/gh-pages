@@ -1,5 +1,5 @@
 /** 
-* jQuery WeUI V0.8.2 
+* jQuery WeUI V1.2.1 
 * By 言川
 * http://lihongxun945.github.io/jquery-weui/
  */
@@ -3225,18 +3225,18 @@ if (typeof define === 'function' && define.amd) {
     var buttons = params.buttons;
 
     var buttonsHtml = buttons.map(function(d, i) {
-      return '<a href="javascript:;" class="weui_btn_dialog ' + (d.className || "") + '">' + d.text + '</a>';
+      return '<a href="javascript:;" class="weui-dialog__btn ' + (d.className || "") + '">' + d.text + '</a>';
     }).join("");
 
-    var tpl = '<div class="weui_dialog">' +
-                '<div class="weui_dialog_hd"><strong class="weui_dialog_title">' + params.title + '</strong></div>' +
-                ( params.text ? '<div class="weui_dialog_bd">'+params.text+'</div>' : '')+
-                '<div class="weui_dialog_ft">' + buttonsHtml + '</div>' +
+    var tpl = '<div class="weui-dialog">' +
+                '<div class="weui-dialog__hd"><strong class="weui-dialog__title">' + params.title + '</strong></div>' +
+                ( params.text ? '<div class="weui-dialog__bd">'+params.text+'</div>' : '')+
+                '<div class="weui-dialog__ft">' + buttonsHtml + '</div>' +
               '</div>';
     
     var dialog = $.openModal(tpl, onOpen);
 
-    dialog.find(".weui_btn_dialog").each(function(i, e) {
+    dialog.find(".weui-dialog__btn").each(function(i, e) {
       var el = $(e);
       el.click(function() {
         //先关闭对话框，再调用回调函数
@@ -3252,7 +3252,7 @@ if (typeof define === 'function' && define.amd) {
   };
 
   $.openModal = function(tpl, onOpen) {
-    var mask = $("<div class='weui_mask'></div>").appendTo(document.body);
+    var mask = $("<div class='weui-mask'></div>").appendTo(document.body);
     mask.show();
 
     var dialog = $(tpl).appendTo(document.body);
@@ -3264,18 +3264,18 @@ if (typeof define === 'function' && define.amd) {
     }   
 
     dialog.show();
-    mask.addClass("weui_mask_visible");
-    dialog.addClass("weui_dialog_visible");
+    mask.addClass("weui-mask--visible");
+    dialog.addClass("weui-dialog--visible");
 
 
     return dialog;
   }
 
   $.closeModal = function() {
-    $(".weui_mask_visible").removeClass("weui_mask_visible").transitionEnd(function() {
+    $(".weui-mask--visible").removeClass("weui-mask--visible").transitionEnd(function() {
       $(this).remove();
     });
-    $(".weui_dialog_visible").removeClass("weui_dialog_visible").transitionEnd(function() {
+    $(".weui-dialog--visible").removeClass("weui-dialog--visible").transitionEnd(function() {
       $(this).remove();
     });
   };
@@ -3365,7 +3365,7 @@ if (typeof define === 'function' && define.amd) {
     }
 
     var modal = $.modal({
-      text: '<p class="weui-prompt-text">'+(config.text || '')+'</p><input type="text" class="weui_input weui-prompt-input" id="weui-prompt-input" value="' + (config.input || '') + '" />',
+      text: '<p class="weui-prompt-text">'+(config.text || '')+'</p><input type="text" class="weui-input weui-prompt-input" id="weui-prompt-input" value="' + (config.input || '') + '" />',
       title: config.title,
       autoClose: false,
       buttons: [
@@ -3422,8 +3422,8 @@ if (typeof define === 'function' && define.amd) {
 
     var modal = $.modal({
       text: '<p class="weui-prompt-text">'+(config.text || '')+'</p>' +
-            '<input type="text" class="weui_input weui-prompt-input" id="weui-prompt-username" value="' + (config.username || '') + '" placeholder="输入用户名" />' +
-            '<input type="password" class="weui_input weui-prompt-input" id="weui-prompt-password" value="' + (config.password || '') + '" placeholder="输入密码" />',
+            '<input type="text" class="weui-input weui-prompt-input" id="weui-prompt-username" value="' + (config.username || '') + '" placeholder="输入用户名" />' +
+            '<input type="password" class="weui-input weui-prompt-input" id="weui-prompt-password" value="' + (config.password || '') + '" placeholder="输入密码" />',
       title: config.title,
       autoClose: false,
       buttons: [
@@ -3480,50 +3480,62 @@ if (typeof define === 'function' && define.amd) {
   
   var show = function(html, className) {
     className = className || "";
-    var mask = $("<div class='weui_mask_transparent'></div>").appendTo(document.body);
+    var mask = $("<div class='weui-mask_transparent'></div>").appendTo(document.body);
 
-    var tpl = '<div class="weui_toast ' + className + '">' + html + '</div>';
+    var tpl = '<div class="weui-toast ' + className + '">' + html + '</div>';
     var dialog = $(tpl).appendTo(document.body);
 
+    dialog.addClass("weui-toast--visible");
     dialog.show();
-    dialog.addClass("weui_toast_visible");
   };
 
   var hide = function(callback) {
-    $(".weui_mask_transparent").remove();
-    $(".weui_toast_visible").removeClass("weui_toast_visible").transitionEnd(function() {
+    $(".weui-mask_transparent").remove();
+    var done = false;
+    var $el = $(".weui-toast--visible").removeClass("weui-toast--visible").transitionEnd(function() {
       var $this = $(this);
       $this.remove();
-      callback && callback($this);
+      callback && callback();
+      done = true
     });
+
+    setTimeout(function () {
+      if (!done) {
+        $el.remove()
+        callback && callback();
+      }
+    }, 1000)
   }
 
   $.toast = function(text, style, callback) {
     if(typeof style === "function") {
       callback = style;
     }
-    var className;
+    var className, iconClassName = 'weui-icon-success-no-circle';
+    var duration = toastDefaults.duration;
     if(style == "cancel") {
-      className = "weui_toast_cancel";
+      className = "weui-toast_cancel";
+      iconClassName = 'weui-icon-cancel'
     } else if(style == "forbidden") {
-      className = "weui_toast_forbidden";
+      className = "weui-toast--forbidden";
+      iconClassName = 'weui-icon-warn'
     } else if(style == "text") {
-      className = "weui_toast_text";
+      className = "weui-toast--text";
+    } else if(typeof style === typeof 1) {
+      duration = style
     }
-    show('<i class="weui_icon_toast"></i><p class="weui_toast_content">' + (text || "已经完成") + '</p>', className);
+    show('<i class="' + iconClassName + ' weui-icon_toast"></i><p class="weui-toast_content">' + (text || "已经完成") + '</p>', className);
 
     setTimeout(function() {
       hide(callback);
-    }, toastDefaults.duration);
+    }, duration);
   }
 
   $.showLoading = function(text) {
     var html = '<div class="weui_loading">';
-    for(var i=0;i<12;i++) {
-      html += '<div class="weui_loading_leaf weui_loading_leaf_' + i + '"></div>';
-    }
+    html += '<i class="weui-loading weui-icon_toast"></i>';
     html += '</div>';
-    html += '<p class="weui_toast_content">' + (text || "数据加载中") + '</p>';
+    html += '<p class="weui-toast_content">' + (text || "数据加载中") + '</p>';
     show(html, 'weui_loading_toast');
   }
 
@@ -3532,7 +3544,7 @@ if (typeof define === 'function' && define.amd) {
   }
 
   var toastDefaults = $.toast.prototype.defaults = {
-    duration: 2000
+    duration: 2500
   }
 
 }($);
@@ -3544,32 +3556,32 @@ if (typeof define === 'function' && define.amd) {
   
   var show = function(params) {
 
-    var mask = $("<div class='weui_mask weui_actions_mask'></div>").appendTo(document.body);
+    var mask = $("<div class='weui-mask weui-actions_mask'></div>").appendTo(document.body);
 
     var actions = params.actions || [];
 
     var actionsHtml = actions.map(function(d, i) {
-      return '<div class="weui_actionsheet_cell ' + (d.className || "") + '">' + d.text + '</div>';
+      return '<div class="weui-actionsheet__cell ' + (d.className || "") + '">' + d.text + '</div>';
     }).join("");
 
     var titleHtml = "";
     
     if (params.title) {
-      titleHtml = '<div class="weui_actionsheet_title">' + params.title + '</div>';
+      titleHtml = '<div class="weui-actionsheet__title"><p class="weui-actionsheet__title-text">' + params.title + '</p></div>';
     }
 
-    var tpl = '<div class="weui_actionsheet " id="weui_actionsheet">'+
+    var tpl = '<div class="weui-actionsheet " id="weui-actionsheet">'+
                 titleHtml +
-                '<div class="weui_actionsheet_menu">'+
+                '<div class="weui-actionsheet__menu">'+
                 actionsHtml +
                 '</div>'+
-                '<div class="weui_actionsheet_action">'+
-                  '<div class="weui_actionsheet_cell weui_actionsheet_cancel">取消</div>'+
+                '<div class="weui-actionsheet__action">'+
+                  '<div class="weui-actionsheet__cell weui-actionsheet_cancel">取消</div>'+
                   '</div>'+
                 '</div>';
     var dialog = $(tpl).appendTo(document.body);
 
-    dialog.find(".weui_actionsheet_menu .weui_actionsheet_cell, .weui_actionsheet_action .weui_actionsheet_cell").each(function(i, e) {
+    dialog.find(".weui-actionsheet__menu .weui-actionsheet__cell, .weui-actionsheet__action .weui-actionsheet__cell").each(function(i, e) {
       $(e).click(function() {
         $.closeActions();
         params.onClose && params.onClose();
@@ -3581,15 +3593,15 @@ if (typeof define === 'function' && define.amd) {
 
     mask.show();
     dialog.show();
-    mask.addClass("weui_mask_visible");
-    dialog.addClass("weui_actionsheet_toggle");
+    mask.addClass("weui-mask--visible");
+    dialog.addClass("weui-actionsheet_toggle");
   };
 
   var hide = function() {
-    $(".weui_mask").removeClass("weui_mask_visible").transitionEnd(function() {
+    $(".weui-mask").removeClass("weui-mask--visible").transitionEnd(function() {
       $(this).remove();
     });
-    $(".weui_actionsheet").removeClass("weui_actionsheet_toggle").transitionEnd(function() {
+    $(".weui-actionsheet").removeClass("weui-actionsheet_toggle").transitionEnd(function() {
       $(this).remove();
     });
   }
@@ -3603,7 +3615,7 @@ if (typeof define === 'function' && define.amd) {
     hide();
   }
 
-  $(document).on("click", ".weui_actions_mask", function() {
+  $(document).on("click", ".weui-actions_mask", function() {
     $.closeActions();
   });
 
@@ -3635,10 +3647,24 @@ if (typeof define === 'function' && define.amd) {
 +function ($) {
   "use strict";
 
-  var PTR = function(el) {
+  var PTR = function(el, opt) {
+    if (typeof opt === typeof function () {}) {
+      opt = {
+        onRefresh: opt
+      }
+    }
+    if (typeof opt === typeof 'a') {
+      opt = undefined
+    }
+    this.opt = $.extend(PTR.defaults, opt || {});
     this.container = $(el);
-    this.distance = 50;
     this.attachEvents();
+  }
+
+  PTR.defaults = {
+    distance: 50,
+    onRefresh: undefined,
+    onPull: undefined
   }
 
   PTR.prototype.touchStart = function(e) {
@@ -3655,18 +3681,14 @@ if (typeof define === 'function' && define.amd) {
     var p = $.getTouchPosition(e);
     this.diffX = p.x - this.start.x;
     this.diffY = p.y - this.start.y;
+    if (Math.abs(this.diffX) > Math.abs(this.diffY)) return true; // 说明是左右方向的拖动
     if(this.diffY < 0) return;
     this.container.addClass("touching");
     e.preventDefault();
     e.stopPropagation();
-    this.diffY = Math.pow(this.diffY, 0.8);
+    this.diffY = Math.pow(this.diffY, 0.75);
     this.container.css("transform", "translate3d(0, "+this.diffY+"px, 0)");
-
-    if(this.diffY < this.distance) {
-      this.container.removeClass("pull-up").addClass("pull-down");
-    } else {
-      this.container.removeClass("pull-down").addClass("pull-up");
-    }
+    this.triggerPull(this.diffY)
   };
   PTR.prototype.touchEnd = function() {
     this.start = false;
@@ -3674,12 +3696,38 @@ if (typeof define === 'function' && define.amd) {
     this.container.removeClass("touching");
     this.container.removeClass("pull-down pull-up");
     this.container.css("transform", "");
-    if(Math.abs(this.diffY) <= this.distance) {
+    if(Math.abs(this.diffY) <= this.opt.distance) {
     } else {
-      this.container.addClass("refreshing");
-      this.container.trigger("pull-to-refresh");
+      this.triggerPullToRefresh();
     }
   };
+
+  PTR.prototype.triggerPullToRefresh = function() {
+    this.triggerPull(this.opt.distance)
+    this.container.removeClass('pull-up').addClass("refreshing");
+    if (this.opt.onRefresh) {
+      this.opt.onRefresh.call(this)
+    }
+    this.container.trigger("pull-to-refresh");
+  }
+
+  PTR.prototype.triggerPull = function(diffY) {
+
+    if(diffY < this.opt.distance) {
+      this.container.removeClass("pull-up").addClass("pull-down");
+    } else {
+      this.container.removeClass("pull-down").addClass("pull-up");
+    }
+
+    if (this.opt.onPull) {
+      this.opt.onPull.call(this, Math.floor(diffY / this.opt.distance * 100))
+    }
+    this.container.trigger("pull");
+  }
+
+  PTR.prototype.pullToRefreshDone = function() {
+    this.container.removeClass("refreshing");
+  }
 
   PTR.prototype.attachEvents = function() {
     var el = this.container;
@@ -3689,17 +3737,18 @@ if (typeof define === 'function' && define.amd) {
     el.on($.touchEvents.end, $.proxy(this.touchEnd, this));
   };
 
-  var pullToRefresh = function(el) {
-    new PTR(el);
-  };
-
   var pullToRefreshDone = function(el) {
     $(el).removeClass("refreshing");
   }
 
-  $.fn.pullToRefresh = function() {
+  $.fn.pullToRefresh = function(opt) {
     return this.each(function() {
-      pullToRefresh(this);
+      var $this = $(this)
+      var ptr = $this.data('ptr')
+      if (!ptr) $this.data('ptr', ptr = new PTR(this, opt))
+      if (typeof opt === typeof 'a') {
+        ptr[opt].call(ptr)
+      }
     });
   }
 
@@ -3718,6 +3767,21 @@ if (typeof define === 'function' && define.amd) {
 +function ($) {
   "use strict";
 
+  // fix https://github.com/lihongxun945/jquery-weui/issues/442
+  // chrome will always return 0, when use document.body.scrollTop
+  // https://stackoverflow.com/questions/43717316/google-chrome-document-body-scrolltop-always-returns-0
+  var getOffset = function (container) {
+    var tagName = container[0].tagName.toUpperCase()
+    var scrollTop 
+    if (tagName === 'BODY' || tagName === 'HTML') {
+      scrollTop = container.scrollTop() || $(window).scrollTop()
+    } else {
+      scrollTop = container.scrollTop()
+    }
+    var offset = container.scrollHeight() - ($(window).height() + scrollTop)
+    console.log(offset)
+    return offset
+  }
 
   var Infinite = function(el, distance) {
     this.container = $(el);
@@ -3728,10 +3792,7 @@ if (typeof define === 'function' && define.amd) {
 
   Infinite.prototype.scroll = function() {
     var container = this.container;
-    var offset = container.scrollHeight() - ($(window).height() + container.scrollTop());
-    if(offset <= this.distance) {
-      container.trigger("infinite");
-    }
+    this._check();
   }
 
   Infinite.prototype.attachEvents = function(off) {
@@ -3741,6 +3802,12 @@ if (typeof define === 'function' && define.amd) {
   };
   Infinite.prototype.detachEvents = function(off) {
     this.attachEvents(true);
+  }
+  Infinite.prototype._check = function() {
+    var offset = getOffset(this.container);
+    if(Math.abs(offset) <= this.distance) {
+      this.container.trigger("infinite");
+    }
   }
 
   var infinite = function(el) {
@@ -3765,7 +3832,7 @@ if (typeof define === 'function' && define.amd) {
 +function ($) {
   "use strict";
 
-  var ITEM_ON = "weui_bar_item_on";
+  var ITEM_ON = "weui-bar__item--on";
 
   var showTab = function(a) {
     var $a = $(a);
@@ -3777,16 +3844,16 @@ if (typeof define === 'function' && define.amd) {
     $a.parent().find("."+ITEM_ON).removeClass(ITEM_ON);
     $a.addClass(ITEM_ON);
 
-    var bd = $a.parents(".weui_tab").find(".weui_tab_bd");
+    var bd = $a.parents(".weui-tab").find(".weui-tab__bd");
 
-    bd.find(".weui_tab_bd_item_active").removeClass("weui_tab_bd_item_active");
+    bd.find(".weui-tab__bd-item--active").removeClass("weui-tab__bd-item--active");
 
-    $(href).addClass("weui_tab_bd_item_active");
+    $(href).addClass("weui-tab__bd-item--active");
   }
 
   $.showTab = showTab;
 
-  $(document).on("click", ".weui_tabbar_item, .weui_navbar_item", function(e) {
+  $(document).on("click", ".weui-navbar__item, .weui-tabbar__item", function(e) {
     var $a = $(e.currentTarget);
     var href = $a.attr("href");
     if($a.hasClass(ITEM_ON)) return;
@@ -3799,23 +3866,24 @@ if (typeof define === 'function' && define.amd) {
 
 }($);
 
-
 /* global $:true */
 + function($) {
   "use strict";
 
-  $(document).on("click", ".weui_search_bar label", function(e) {
-    $(e.target).parents(".weui_search_bar").addClass("weui_search_focusing");
+  $(document).on("click touchstart", ".weui-search-bar__label", function(e) {
+    $(e.target).parents(".weui-search-bar").addClass("weui-search-bar_focusing").find('input').focus();
   }) 
-  .on("blur", ".weui_search_input", function(e) {
+  /*
+  .on("blur", ".weui-search-bar__input", function(e) {
     var $input = $(e.target);
-    if(!$input.val()) $input.parents(".weui_search_bar").removeClass("weui_search_focusing");
+    if(!$input.val()) $input.parents(".weui-search-bar").removeClass("weui-search-bar_focusing");
   })
-  .on("click", ".weui_search_cancel", function(e) {
-    var $input = $(e.target).parents(".weui_search_bar").removeClass("weui_search_focusing").find(".weui_search_input").val("").blur();
+  */
+  .on("click", ".weui-search-bar__cancel-btn", function(e) {
+    var $input = $(e.target).parents(".weui-search-bar").removeClass("weui-search-bar_focusing").find(".weui-search-bar__input").val("").blur();
   })
-  .on("click", ".weui_icon_clear", function(e) {
-    var $input = $(e.target).parents(".weui_search_bar").find(".weui_search_input").val("").focus();
+  .on("click", ".weui-icon-clear", function(e) {
+    var $input = $(e.target).parents(".weui-search-bar").find(".weui-search-bar__input").val("").focus();
   });
 
 }($);
@@ -4516,6 +4584,7 @@ Device/OS Detection
           p.close();
           if (p.params.input && p.input.length > 0) {
               p.input.off('click focus', openOnInput);
+              $(p.input).data('picker', null);
           }
           $('html').off('click', closeOnHTMLClick);
           $(window).off('resize', resizeCols);
@@ -4596,10 +4665,10 @@ Device/OS Detection
       
       var picker = $this.data("picker");
       if(!picker) {
-        params = params || {};
+        params = $.extend({ input: this }, params || {}) // https://github.com/lihongxun945/jquery-weui/issues/432
         var inputValue = $this.val();
         if(params.value === undefined && inputValue !== "") {
-          params.value = params.cols.length > 1 ? inputValue.split(" ") : [inputValue];
+          params.value = (params.cols && params.cols.length > 1) ? inputValue.split(" ") : [inputValue];
         }
         var p = $.extend({input: this}, params);
         picker = new Picker(p);
@@ -4617,6 +4686,8 @@ Device/OS Detection
   "use strict";
 
   var defaults;
+
+  var selects = [];
 
   var Select = function(input, config) {
 
@@ -4639,7 +4710,7 @@ Device/OS Detection
     config = this.config;
 
     this.$input.click($.proxy(this.open, this));
-
+    selects.push(this)
   }
 
   Select.prototype.initConfig = function() {
@@ -4736,8 +4807,9 @@ Device/OS Detection
       });
       self.updateInputValue(values, titles);
 
-      if(config.autoClose && !config.multi) $.closePicker();
+      if(config.autoClose && !config.multi) self.close();
     })
+    .trigger('change')
     .on("click", ".close-select", function() {
       self.close();
     });
@@ -4756,11 +4828,20 @@ Device/OS Detection
 
     if(this._open) return;
 
+    // open picker 会默认关掉其他的，但是 onClose 不会被调用，所以这里先关掉其他select
+    for (var i = 0; i < selects.length; i++ ) {
+      var s = selects[i];
+      if (s === this) continue;
+      if (s._open) {
+        if(!s.close()) return false; // 其他的select由于某些条件限制关闭失败。
+      }
+    }
+
     this.parseInitValue();
 
     var config = this.config;
 
-    var dialog = this.dialog = $.openPicker(this.getHTML(), $.proxy(this.onClose, this));
+    var dialog = this.dialog = $.openPicker(this.getHTML());
     
     this._bind(dialog);
 
@@ -4769,6 +4850,7 @@ Device/OS Detection
   }
 
   Select.prototype.close = function(callback, force) {
+    if (!this._open) return false;
     var self = this,
         beforeClose = this.config.beforeClose;
 
@@ -4794,6 +4876,8 @@ Device/OS Detection
       self.onClose();
       callback && callback();
     });
+
+    return true
   }
 
   Select.prototype.onClose = function() {
@@ -4846,29 +4930,29 @@ Device/OS Detection
       </div>\
       </div>',
     radioTemplate:
-      '<div class="weui_cells weui_cells_radio">\
+      '<div class="weui-cells weui-cells_radio">\
         {{#items}}\
-        <label class="weui_cell weui_check_label" for="weui-select-id-{{this.title}}">\
-          <div class="weui_cell_bd weui_cell_primary">\
+        <label class="weui-cell weui-check_label" for="weui-select-id-{{this.title}}">\
+          <div class="weui-cell__bd weui-cell_primary">\
             <p>{{this.title}}</p>\
           </div>\
-          <div class="weui_cell_ft">\
-            <input type="radio" class="weui_check" name="weui-select" id="weui-select-id-{{this.title}}" value="{{this.value}}" {{#if this.checked}}checked="checked"{{/if}} data-title="{{this.title}}">\
-            <span class="weui_icon_checked"></span>\
+          <div class="weui-cell__ft">\
+            <input type="radio" class="weui-check" name="weui-select" id="weui-select-id-{{this.title}}" value="{{this.value}}" {{#if this.checked}}checked="checked"{{/if}} data-title="{{this.title}}">\
+            <span class="weui-icon-checked"></span>\
           </div>\
         </label>\
         {{/items}}\
       </div>',
     checkboxTemplate:
-      '<div class="weui_cells weui_cells_checkbox">\
+      '<div class="weui-cells weui-cells_checkbox">\
         {{#items}}\
-        <label class="weui_cell weui_check_label" for="weui-select-id-{{this.title}}">\
-          <div class="weui_cell_bd weui_cell_primary">\
+        <label class="weui-cell weui-check_label" for="weui-select-id-{{this.title}}">\
+          <div class="weui-cell__bd weui-cell_primary">\
             <p>{{this.title}}</p>\
           </div>\
-          <div class="weui_cell_ft">\
-            <input type="checkbox" class="weui_check" name="weui-select" id="weui-select-id-{{this.title}}" value="{{this.value}}" {{#if this.checked}}checked="checked"{{/if}} data-title="{{this.title}}" >\
-            <span class="weui_icon_checked"></span>\
+          <div class="weui-cell__ft">\
+            <input type="checkbox" class="weui-check" name="weui-select" id="weui-select-id-{{this.title}}" value="{{this.value}}" {{#if this.checked}}checked="checked"{{/if}} data-title="{{this.title}}" >\
+            <span class="weui-icon-checked"></span>\
           </div>\
         </label>\
         {{/items}}\
@@ -4886,6 +4970,11 @@ Device/OS Detection
   "use strict";
   var rtl = false;
   var defaults;
+  var isSameDate = function (a, b) {
+    var a = new Date(a),
+      b = new Date(b);
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+  }
   var Calendar = function (params) {
       var p = this;
       params = params || {};
@@ -4959,7 +5048,7 @@ Device/OS Detection
               if (!p.value) p.value = [];
               var inValuesIndex;
               for (var i = 0; i < p.value.length; i++) {
-                  if (new Date(value).getTime() === new Date(p.value[i]).getTime()) {
+                  if (isSameDate(value, p.value[i])) {
                       inValuesIndex = i;
                   }
               }
@@ -5701,7 +5790,7 @@ Device/OS Detection
             //默认显示今天
             if(!params.value) {
               var today = new Date();
-              params.value = [today.getFullYear() + "-" + format(today.getMonth() + 1) + "-" + format(today.getDate())];
+              params.value = [today.getFullYear() + "/" + format(today.getMonth() + 1) + "/" + format(today.getDate())];
             }
             calendar = $this.data("calendar", new Calendar($.extend(p, params)));
           }
@@ -5722,7 +5811,7 @@ Device/OS Detection
     firstDay: 1, // First day of the week, Monday
     weekendDays: [0, 6], // Sunday and Saturday
     multiple: false,
-    dateFormat: 'yyyy-mm-dd',
+    dateFormat: 'yyyy/mm/dd',
     direction: 'horizontal', // or 'vertical'
     minDate: null,
     maxDate: null,
@@ -5787,15 +5876,11 @@ Device/OS Detection
 
   var Datetime = function(input, params) {
     this.input = $(input);
-    this.params = params;
+    this.params = params || {};
 
-    this.initMonthes = ('01 02 03 04 05 06 07 08 09 10 11 12').split(' ');
+    this.initMonthes = params.monthes
 
-    this.initYears = (function () {
-      var arr = [];
-      for (var i = 1950; i <= 2030; i++) { arr.push(i); }
-      return arr;
-    })();
+    this.initYears = params.years
 
     var p = $.extend({}, params, this.getConfig());
     $(this.input).picker(p);
@@ -5866,18 +5951,14 @@ Device/OS Detection
 
         cols: [
           {
-            values: (function () {
-              var years = [];
-              for (var i=1950; i<=2050; i++) years.push(i);
-              return years;
-            })()
+            values: this.initYears
           },
           {
             divider: true,  // 这是一个分隔符
             content: params.yearSplit
           },
           {
-            values: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+            values: this.initMonthes
           },
           {
             divider: true,  // 这是一个分隔符
@@ -5941,6 +6022,12 @@ Device/OS Detection
     monthSplit: '-',
     dateSplit: '',  // 默认为空
     datetimeSplit: ' ',  // 日期和时间之间的分隔符，不可为空
+    monthes: ('01 02 03 04 05 06 07 08 09 10 11 12').split(' '),
+    years: (function () {
+      var arr = [];
+      for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+      return arr;
+    })(),
     times: function () {
       return [  // 自定义的时间
         {
@@ -5999,8 +6086,8 @@ Device/OS Detection
     popup = $(popup);
     popup.show();
     popup.width();
-    popup.addClass("weui-popup-container-visible");
-    var modal = popup.find(".weui-popup-modal");
+    popup.addClass("weui-popup__container--visible");
+    var modal = popup.find(".weui-popup__modal");
     modal.width();
     modal.transitionEnd(function() {
       modal.trigger("open");
@@ -6009,25 +6096,25 @@ Device/OS Detection
 
 
   $.closePopup = function(container, remove) {
-    container = $(container || ".weui-popup-container-visible");
-    container.find('.weui-popup-modal').transitionEnd(function() {
+    container = $(container || ".weui-popup__container--visible");
+    container.find('.weui-popup__modal').transitionEnd(function() {
       var $this = $(this);
       $this.trigger("close");
       container.hide();
       remove && container.remove();
     })
-    container.removeClass("weui-popup-container-visible")
+    container.removeClass("weui-popup__container--visible")
   };
 
 
-  $(document).on("click", ".close-popup, .weui-popup-overlay", function() {
+  $(document).on("click", ".close-popup, .weui-popup__overlay", function() {
     $.closePopup();
   })
   .on("click", ".open-popup", function() {
     $($(this).data("target")).popup();
   })
-  .on("click", ".weui-popup-container", function(e) {
-    if($(e.target).hasClass("weui-popup-container")) $.closePopup();
+  .on("click", ".weui-popup__container", function(e) {
+    if($(e.target).hasClass("weui-popup__container")) $.closePopup();
   })
 
   $.fn.popup = function() {
@@ -6088,9 +6175,9 @@ Device/OS Detection
 
   $.notification = $.noti = function(params) {
     params = $.extend({}, defaults, params);
-    noti = $(".notification");
+    noti = $(".weui-notification");
     if(!noti[0]) { // create a new notification
-      noti = $('<div class="notification"></div>').appendTo(document.body);
+      noti = $('<div class="weui-notification"></div>').appendTo(document.body);
       attachEvents(noti);
     }
 
@@ -6103,7 +6190,7 @@ Device/OS Detection
 
     noti.show();
 
-    noti.addClass("notification-in");
+    noti.addClass("weui-notification--in");
     noti.data("params", params);
 
     var startTimeout = function() {
@@ -6113,7 +6200,7 @@ Device/OS Detection
       }
 
       timeout = setTimeout(function() {
-        if(noti.hasClass("touching")) {
+        if(noti.hasClass("weui-notification--touching")) {
           startTimeout();
         } else {
           $.closeNotification();
@@ -6128,12 +6215,12 @@ Device/OS Detection
   $.closeNotification = function() {
     timeout && clearTimeout(timeout);
     timeout = null;
-    var noti = $(".notification").removeClass("notification-in").transitionEnd(function() {
+    var noti = $(".weui-notification").removeClass("weui-notification--in").transitionEnd(function() {
       $(this).remove();
     });
 
     if(noti[0]) {
-      var params = $(".notification").data("params");
+      var params = $(".weui-notification").data("params");
       if(params && params.onClose) {
         params.onClose(params.data);
       }
@@ -6148,13 +6235,13 @@ Device/OS Detection
     onClick: undefined,
     onClose: undefined,
     data: undefined,
-    tpl:  '<div class="notification-inner">' +
-            '{{#if media}}<div class="notification-media">{{media}}</div>{{/if}}' +
-            '<div class="notification-content">' +
-            '{{#if title}}<div class="notification-title">{{title}}</div>{{/if}}' +
-            '{{#if text}}<div class="notification-text">{{text}}</div>{{/if}}' +
+    tpl:  '<div class="weui-notification__inner">' +
+            '{{#if media}}<div class="weui-notification__media">{{media}}</div>{{/if}}' +
+            '<div class="weui-notification__content">' +
+            '{{#if title}}<div class="weui-notification__title">{{title}}</div>{{/if}}' +
+            '{{#if text}}<div class="weui-notification__text">{{text}}</div>{{/if}}' +
             '</div>' +
-            '<div class="notification-handle-bar"></div>' +
+            '<div class="weui-notification__handle-bar"></div>' +
           '</div>'
   };
 
@@ -6173,22 +6260,191 @@ Device/OS Detection
     }
     duration = duration || 3000;
     var className = type ? 'bg-' + type : 'bg-danger';
-    var $t = $('.weui_toptips').remove();
-    $t = $('<div class="weui_toptips"></div>').appendTo(document.body);
+    var $t = $('.weui-toptips').remove();
+    $t = $('<div class="weui-toptips"></div>').appendTo(document.body);
     $t.html(text);
-    $t[0].className = 'weui_toptips ' + className
+    $t[0].className = 'weui-toptips ' + className
 
     clearTimeout(timeout);
 
-    if(!$t.hasClass('weui_toptips_visible')) {
+    if(!$t.hasClass('weui-toptips_visible')) {
       $t.show().width();
-      $t.addClass('weui_toptips_visible');
+      $t.addClass('weui-toptips_visible');
     }
 
     timeout = setTimeout(function() {
-      $t.removeClass('weui_toptips_visible').transitionEnd(function() {
+      $t.removeClass('weui-toptips_visible').transitionEnd(function() {
         $t.remove();
       });
     }, duration);
   }
+}($);
+
+/* global $:true */
++ function($) {
+  "use strict";
+  var Slider = function (container, arg) {
+    this.container = $(container);
+    this.handler = this.container.find('.weui-slider__handler')
+    this.track = this.container.find('.weui-slider__track')
+    this.value = this.container.find('.weui-slider-box__value')
+    this.bind()
+    if (typeof arg === 'function') {
+      this.callback = arg
+    }
+  }
+
+  Slider.prototype.bind = function () {
+    this.container
+      .on($.touchEvents.start, $.proxy(this.touchStart, this))
+      .on($.touchEvents.end, $.proxy(this.touchEnd, this));
+    $(document.body).on($.touchEvents.move, $.proxy(this.touchMove, this)) // move even outside container
+  }
+
+  Slider.prototype.touchStart = function (e) {
+    e.preventDefault()
+    this.start = $.getTouchPosition(e)
+    this.width = this.container.find('.weui-slider__inner').width()
+    this.left = parseInt(this.container.find('.weui-slider__handler').css('left'))
+    this.touching = true
+  }
+
+  Slider.prototype.touchMove = function (e) {
+    if (!this.touching) return true
+    var p = $.getTouchPosition(e)
+    var distance = p.x - this.start.x
+    var left = distance + this.left
+    var per = parseInt(left / this.width * 100)
+    if (per < 0) per = 0
+    if (per > 100) per = 100
+    this.handler.css('left', per + '%')
+    this.track.css('width', per + '%')
+    this.value.text(per)
+    this.callback && this.callback.call(this, per)
+    this.container.trigger('change', per)
+  }
+
+  Slider.prototype.touchEnd = function (e) {
+    this.touching = false
+  }
+
+  $.fn.slider = function (arg) {
+    this.each(function () {
+      var $this = $(this)
+      var slider = $this.data('slider')
+      if (slider) return slider;
+      else $this.data('slider', new Slider(this, arg))
+    })
+  }
+}($);
+
+/* ===============================================================================
+************   Swipeout ************
+=============================================================================== */
+/* global $:true */
+
++function ($) {
+  "use strict";
+
+  var cache = [];
+  var TOUCHING = 'swipeout-touching'
+
+  var Swipeout = function(el) {
+    this.container = $(el);
+    this.mover = this.container.find('>.weui-cell__bd')
+    this.attachEvents();
+    cache.push(this)
+  }
+
+  Swipeout.prototype.touchStart = function(e) {
+    var p = $.getTouchPosition(e);
+    this.container.addClass(TOUCHING);
+    this.start = p;
+    this.startX = 0;
+    this.startTime = + new Date;
+    var transform =  this.mover.css('transform').match(/-?[\d\.]+/g)
+    if (transform && transform.length) this.startX = parseInt(transform[4])
+    this.diffX = this.diffY = 0;
+    this._closeOthers()
+    this.limit = this.container.find('>.weui-cell__ft').width() || 68; // 因为有的时候初始化的时候元素是隐藏的（比如在对话框内），所以在touchstart的时候计算宽度而不是初始化的时候
+  };
+
+  Swipeout.prototype.touchMove= function(e) {
+    if(!this.start) return true;
+    var p = $.getTouchPosition(e);
+    this.diffX = p.x - this.start.x;
+    this.diffY = p.y - this.start.y;
+    if (Math.abs(this.diffX) < Math.abs(this.diffY)) { // 说明是上下方向在拖动
+      this.close()
+      this.start = false
+      return true;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    var x = this.diffX + this.startX
+    if (x > 0) x = 0;
+    if (Math.abs(x) > this.limit) x = - (Math.pow(-(x+this.limit), .7) + this.limit)
+    this.mover.css("transform", "translate3d("+x+"px, 0, 0)");
+  };
+  Swipeout.prototype.touchEnd = function() {
+    if (!this.start) return true;
+    this.start = false;
+    var x = this.diffX + this.startX
+    var t = new Date - this.startTime;
+    if (this.diffX < -5 && t < 200) { // 向左快速滑动，则打开
+      this.open()
+    } else if (this.diffX >= 0 && t < 200) { // 向右快速滑动，或者单击,则关闭
+      this.close()
+    } else if (x > 0 || -x <= this.limit / 2) {
+      this.close()
+    } else {
+      this.open()
+    }
+  };
+
+
+  Swipeout.prototype.close = function() {
+    this.container.removeClass(TOUCHING);
+    this.mover.css("transform", "translate3d(0, 0, 0)");
+    this.container.trigger('swipeout-close');
+  }
+
+  Swipeout.prototype.open = function() {
+    this.container.removeClass(TOUCHING);
+    this._closeOthers()
+    this.mover.css("transform", "translate3d(" + (-this.limit) + "px, 0, 0)");
+    this.container.trigger('swipeout-open');
+  }
+
+  Swipeout.prototype.attachEvents = function() {
+    var el = this.mover;
+    el.on($.touchEvents.start, $.proxy(this.touchStart, this));
+    el.on($.touchEvents.move, $.proxy(this.touchMove, this));
+    el.on($.touchEvents.end, $.proxy(this.touchEnd, this));
+  }
+  Swipeout.prototype._closeOthers = function() {
+    //close others
+    var self = this
+    cache.forEach(function (s) {
+      if (s !== self) s.close()
+    })
+  }
+
+  var swipeout = function(el) {
+    return new Swipeout(el);
+  };
+
+  $.fn.swipeout = function (arg) {
+    return this.each(function() {
+      var $this = $(this)
+      var s = $this.data('swipeout') || swipeout(this);
+      $this.data('swipeout', s);
+
+      if (typeof arg === typeof 'a') {
+        s[arg]()
+      }
+    });
+  }
+
+  $('.weui-cell_swiped').swipeout() // auto init
 }($);

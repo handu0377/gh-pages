@@ -7,6 +7,7 @@ layout: default
     <div class="container-fluid">
       <h1>基础组件</h1>
       <p>WeUI 包含了大量常用的组件：按钮，表单，列表，对话框等。这里的组件全部都是官方的样式。</p>
+      {% include ad.html %}
     </div>
   </div>
   <div class="container-fluid docs-container">
@@ -17,7 +18,7 @@ layout: default
       <div class="device">
         <div class="status-bar"></div>
         <div class="window" id="window">
-          <iframe src="{{ "/docs-demos/buttons.html" | prepend: site.baseurl }}" width="320" height="549" frameborder="0"></iframe>
+          <iframe src="{{ "/dist/demos/grid.html" | prepend: site.baseurl }}" width="320" height="549" frameborder="0"></iframe>
           <div id="qrcode"></div>
         </div>
         <div id="qrcode-btn"></div>
@@ -26,9 +27,14 @@ layout: default
     <div class="docs-col">
 
       {% include _components/grid.html %}
+      {% include _components/flex.html %}
       {% include _components/buttons.html %}
       {% include _components/cell.html %}
+      {% include _components/swipeout.html %}
       {% include _components/form.html %}
+      {% include _components/uploader.html %}
+      {% include _components/gallery.html %}
+      {% include _components/slider.html %}
       {% include _components/msg.html %}
       {% include _components/progress.html %}
       {% include _components/dialog.html %}
@@ -39,7 +45,10 @@ layout: default
       {% include _components/tabbar.html %}
       {% include _components/navbar.html %}
       {% include _components/panel.html %}
+      {% include _components/preview.html %}
       {% include _components/searchbar.html %}
+      {% include _components/loadmore.html %}
+      {% include _components/footer.html %}
       {% include _components/icons.html %}
     </div>
 

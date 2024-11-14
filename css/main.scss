@@ -120,7 +120,7 @@ article {
   overflow: hidden;
   font-size: .85rem;
   line-height: 1.05rem;
-  background: #eee;
+  background: #fbfbfb;
 }
 
 .status-bar {
@@ -143,7 +143,18 @@ article {
   width: 120px;
   color: #666;
   background: transparent!important;
-  padding: 8px 0;
+  padding: 2px 0;
+}
+
+@media (min-height: 700px) {
+  .side-nav > li > a {
+    padding: 4px;
+  }
+}
+@media (min-height: 800px) {
+  .side-nav > li > a {
+    padding: 6px;
+  }
 }
 .side-nav > li.active > a {
   color: $brand-color;
@@ -172,11 +183,7 @@ article {
 }
 
 .logo {
-  float: left;
-
-  img {
-    width: 250px;
-  }
+  
 }
 
 footer {
@@ -200,7 +207,7 @@ footer {
     }
   }
 
-  a {
+  a, a:visited {
     color: #999;
   }
 
@@ -225,12 +232,20 @@ code {
 
 .home {
   .brand-header .container {
-    padding-top: 30px;
+    padding-top: 20px;
+    font-size: 16px;
 
     .logo {
-      margin-top: -25px;
+      float: left;
       margin-right: 40px;
+
+      img {
+        width: 250px;
+      }
     }
+  }
+  .container-inner {
+    margin-left: 300px;
   }
 }
 
@@ -257,6 +272,35 @@ code {
     height: 24px;
     border: 0;
     display: inline-block;
+  }
+}
+
+.brand-links {
+  font-size: 14px;
+  a {
+    color: #666;
+    text-decoration: none;
+    &:hover {
+      color: #2a7ae2;
+    }
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    display: inline-block;
+    height: 30px;
+  }
+
+  li {
+    float: left;
+    padding: 4px 15px;
+  }
+
+  li + li {
+    border-left: 1px solid #aaa;
   }
 }
 
@@ -309,5 +353,145 @@ code {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
     transform-origin: 50% 50%;
+  }
+}
+
+.pop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+  font-size: 12px;
+
+  .pop-img {
+    display: flex;
+
+    img + img {
+      margin-left: 8px;
+    }
+  }
+
+  .pop-item {
+    display: flex;
+    border: 1px solid #ddd;
+    padding: 6px;
+    margin: 0 10px;
+  }
+
+  .placeholder {
+    opacity: .6;
+  }
+
+  img {
+    display: block;
+    height: 200px;
+  }
+
+  p {
+    margin: 8px 0;
+  }
+
+  .pop-des {
+    width: 220px;
+    padding: 7px 10px;
+    line-height: 150%;
+  }
+
+  h3 a {
+    font-size: 18px;
+    color: #555;
+  }
+
+  i, i a {
+    text-decoration: none;
+    color: #999;
+  }
+
+  a:hover {
+    text-decoration: underline!important;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .pop {
+    flex-direction: column;
+  }
+}
+
+.update-time {
+  font-size: 18px;
+  color: #aaa;
+}
+
+.brand-header .container,
+.brand-header .container-fluid {
+  position: relative;
+}
+
+.brand-pop {
+  position: absolute;
+  height: 120px;
+  width: 120px;
+  color: 999;
+  border: 1px solid #ccc;
+  top: 50%;
+  right: 120px;
+  margin-top: -60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 14px;
+
+  &:visited {
+    color: #999;
+  }
+
+  a {
+    color: #999;
+  }
+}
+
+
+.footer-inner {
+  width: 400px;
+  margin: auto;
+
+  ul {
+    margin: 0;
+    padding: 20px 0;
+  }
+}
+
+.codingnet-icon {
+  float: left;
+
+  img {
+    width: 100px;
+  }
+}
+
+.cn-only {
+  display: none!important;
+}
+
+.cn .cn-only {
+  display: block!important;
+}
+
+.en-only {
+  display: none!important;
+}
+
+.en .en-only {
+  display: block!important;
+}
+
+.secret {
+  font-size: 12px;
+  code {
+    font-size: 12px;
   }
 }
